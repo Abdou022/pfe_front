@@ -1,4 +1,9 @@
+import 'package:find_me/Core/Scan/load_afterScan.dart';
+import 'package:find_me/Core/Search/product_detail.dart';
+import 'package:find_me/Core/Search/product_not_found.dart';
 import 'package:find_me/Core/Search/search_fail.dart';
+import 'package:find_me/Models/product_model.dart';
+import 'package:find_me/Services/product_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -13,6 +18,7 @@ class BarCodeScan extends StatefulWidget {
 
 class _BarCodeScanState extends State<BarCodeScan> {
   String? scanResult;
+  ProductApiCall _productApiCall = ProductApiCall();
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: Color(0xFFFDF1E1),
       appBar: AppBar(
@@ -110,5 +116,29 @@ class _BarCodeScanState extends State<BarCodeScan> {
     if(scanResult=='-1'){
     Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => SearchFail(barcode: scanResult),));
     }
+    else{
+      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => LoadAfterScan()));
+      fetchData(scanResult);
+      
+    }
   }
+
+  Future<void> fetchData(String scanResult) async {
+  try {
+    Future<ProductModel>? productFuture = _productApiCall.getProductByBarCode(scanResult);
+    ProductModel product = await productFuture;
+
+    // Check if the barcode value is -1
+    if (product.barcode == -1) {
+      // Barcode value is -1
+      print('Barcode value is -1');
+      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => ProductNotFound(barcode: scanResult)));
+    }else{
+      Navigator.pushReplacement(context,  CupertinoPageRoute(builder: (context) =>ProductDetail(identifier: scanResult)));
+    }
+  } catch (error) {
+    print('$error');
+    // Handle the error
+  }
+}
 }

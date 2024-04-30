@@ -1,3 +1,4 @@
+import 'package:find_me/Core/Search/product_detail.dart';
 import 'package:find_me/Models/prod_filter.dart';
 import 'package:find_me/Models/product_model.dart';
 import 'package:find_me/Services/product_api.dart';
@@ -123,17 +124,174 @@ class _SearchPageState extends State<SearchPage> {
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: snapshot.data!.length,
-                          itemBuilder:(context, index) => Container(
-                            color: const Color.fromARGB(255, 125, 195, 252),
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  title: Text(snapshot.data![index].name),
-                                  subtitle: Text("${snapshot.data![index].price}"),
-                                )
-                              ],
-                            ),
-                          ) ,
+                          itemBuilder:(context, index) =>
+                           InkWell(
+                            onTap: () {
+                              print("Page search products: ${snapshot.data![index].id}");
+                              Navigator.push(context, CupertinoPageRoute(builder: (context) => ProductDetail(identifier: snapshot.data![index].id),));
+                            },
+                             child: Container(
+                              margin: const EdgeInsets.only(left: 2),
+                              
+                              child: 
+                              Row(
+                                children: [
+                                  Container(
+                                    clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10)),
+                                      child: 
+                                      Image.network("http://20.20.22.241:5000/images/${snapshot.data![index].thumbnail}",height: MediaQuery.of(context).size.width*0.3,
+                                       width: 110,
+                                       fit: BoxFit.fill,),
+                                  ),
+                                  Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 10, left: 20),
+                                    child: SizedBox(
+                                      height: 120,
+                                      width: 120,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            "${snapshot.data?[index].name}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${snapshot.data?[index].brand}",
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 11,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.star_rate_rounded,
+                                                color: Color(0xFFFFBD59),
+                                              ),
+                                              const SizedBox(
+                                                width: 2,
+                                              ),
+                                              Text(
+                                                "${snapshot.data?[index].rating}",
+                                                style: const TextStyle(
+                                                    color: Color(0xFFFFBD59)),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            "${snapshot.data?[index].price}"
+                                            r" DT",
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 13,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 3,
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              /*
+                                              // Check if the product is in the favorite list
+                                              if (isInFavorites) {
+                                                // If the product is already in favorites, remove it
+                                                controller.removeFromFavorites(
+                                                    controller.productsModel!
+                                                        .products![index]);
+                                              } else {
+                                                // If the product is not in favorites, add it
+                                                controller.addToFavorites(
+                                                    controller.productsModel!
+                                                        .products![index]);
+                                              }
+                                              //  Get.to(() => FavoritesPage());
+                                              */
+                                            },
+                                            child: Icon(
+                                              Icons.favorite_rounded,
+                                              color: Colors.grey,
+                                              /*isInFavorites                           //khedmet khadija
+                                                  ? Colors.red
+                                                  : null,*/
+                                              size: 20,
+                                            ),
+                                          ),
+
+                                          /* InkWell(
+                                            onTap: () {
+                                              if (isFavorite) {
+                                                controller.removeFromFavorites(
+                                                    controller.productsModel!
+                                                        .products![index]);
+                                              } else {
+                                                controller.addToFavorites(
+                                                    controller.productsModel!
+                                                        .products![index]);
+                                              }
+                                              Get.to(() => FavoritesPage());
+                                            },
+                                            child: Icon(
+                                              Icons.favorite_rounded,
+                                              color: isFavorite
+                                                  ? Colors.red
+                                                  : null,
+                                              size: 20,
+                                            ),
+                                          ),*/
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  child: IconButton(
+                                    icon: Icon(Icons.location_on_outlined,
+                                    color: Colors.white,),
+                                     onPressed: () {  
+                                      print("${snapshot.data?[index].shops}");
+                                     },
+                                  ),
+                                  decoration: const ShapeDecoration(
+                                    color: Color(0xFFFFBD59),
+                                    shape: OvalBorder(),
+                                  ),
+                                ),
+                                ],
+                              )
+                              /*Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(snapshot.data![index].name),
+                                    subtitle: Text("${snapshot.data![index].price}"),
+                                  )
+                                ],
+                              ),*/
+                                                       ),
+                           ) ,
                           separatorBuilder: (context, index) => const SizedBox(height: 10,), ),
                       ],
                     );
@@ -143,19 +301,21 @@ class _SearchPageState extends State<SearchPage> {
               children: [
                 SizedBox(height: MediaQuery.of(context).size.width*0.7,),
                 const  Center(
-                  child: CircularProgressIndicator(), // Display loading indicator
+                  child: CircularProgressIndicator(
+                    color: Color(0xFF965D1A),
+                  ), // Display loading indicator
                 ),
               ],
             );
           }
                   
                 },),
-                Text("name: ${widget.req?.name}"),
+                /*Text("name: ${widget.req?.name}"),
                 Text("size:${widget.req?.size}"),
                 Text("colors: ${widget.req?.colors}"),
                 Text("sortBy: ${widget.req?.sortBy}"),
                 Text("sortOrder: ${widget.req?.sortOrder}"),
-                Text("region: ${widget.req?.region}"),
+                Text("region: ${widget.req?.region}"),*/
               ],
             ),
           ),

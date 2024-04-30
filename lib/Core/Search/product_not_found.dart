@@ -1,6 +1,6 @@
 import 'package:find_me/Core/Scan/load_afterScan.dart';
 import 'package:find_me/Core/Search/product_detail.dart';
-import 'package:find_me/Core/Search/product_not_found.dart';
+import 'package:find_me/Core/Search/search_fail.dart';
 import 'package:find_me/Models/product_model.dart';
 import 'package:find_me/Services/product_api.dart';
 import 'package:find_me/main_screen.dart';
@@ -9,17 +9,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
-class SearchFail extends StatefulWidget {
-  const SearchFail({super.key, required this.barcode});
+class ProductNotFound extends StatefulWidget {
+  const ProductNotFound({super.key, required this.barcode});
   final String barcode;
 
 
 
   @override
-  State<SearchFail> createState() => _SearchState();
+  State<ProductNotFound> createState() => _SearchState();
 }
 
-class _SearchState extends State<SearchFail> {
+class _SearchState extends State<ProductNotFound> {
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _SearchState extends State<SearchFail> {
               Expanded(child: SizedBox(),flex: 1,),
               Image.asset("assets/images/cancel.png",width: 250,),
               SizedBox(height: 10,),
-              Text("Unable to read data",style: TextStyle(
+              Text("Oops, This product doesn't exist in the database",style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
                         fontFamily: 'Poppins',

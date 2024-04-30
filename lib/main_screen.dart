@@ -145,7 +145,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
                     print("Appel: ${requette?.sortBy}");
                     print("Appel: ${requette?.sortOrder}");
                     print("Appel: ${requette?.region}");*/
-                    print("Appel: ${requette?.size}");
+                    //print("Appel: ${requette?.size}");
                     Navigator.push(context, CupertinoPageRoute(builder: (context) => SearchPage(req: requette),));
                     
                     /*Navigator.push(
