@@ -1,10 +1,12 @@
 
+import 'package:find_me/Core/Search/osm_map.dart';
 import 'package:find_me/Models/product_model.dart';
 import 'package:find_me/Services/product_api.dart';
 import 'package:find_me/widgets/colors_help.dart';
 import 'package:find_me/widgets/drawerwidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:readmore/readmore.dart';
 
 class ProductDetail extends StatefulWidget {
@@ -102,7 +104,7 @@ class _ProductDetailState extends State<ProductDetail> {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
-                                  "http://20.20.22.241:5000/images/${snapshot.data?.images[index]}",
+                                  "http://192.168.1.15:5000/images/${snapshot.data?.images[index]}",
                                   fit: BoxFit.fill,
                                   width:
                                       MediaQuery.of(context).size.width * 0.85,
@@ -367,8 +369,13 @@ class _ProductDetailState extends State<ProductDetail> {
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder:(context, index) {
                                     return InkWell(
-                                      onTap: () {
-                                        
+                                      onTap: () async{
+                                        var status = await Permission.location.request();
+                                        if(status.isGranted){
+                                          Navigator.push(context, CupertinoPageRoute(builder: (context) => ShopMap( name: '${snapshot.data?.shops[index]}',)));
+                                        }else {
+                                          print("Location permission is required to use the app.");
+                                          }
                                       },
                                       child: Container(
                                         clipBehavior: Clip.antiAlias,

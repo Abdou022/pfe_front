@@ -1,4 +1,6 @@
+import 'package:find_me/Core/Search/osm_map.dart';
 import 'package:find_me/Core/Search/product_detail.dart';
+import 'package:find_me/Core/Search/shops_list.dart';
 import 'package:find_me/Models/prod_filter.dart';
 import 'package:find_me/Models/product_model.dart';
 import 'package:find_me/Services/product_api.dart';
@@ -69,7 +71,6 @@ class _SearchPageState extends State<SearchPage> {
                  builder: (context, snapshot) {
                   if(snapshot.hasData){
                     nb= snapshot.data?.length;
-                    
                     return Column(
                       children: [
                         Row(
@@ -141,7 +142,7 @@ class _SearchPageState extends State<SearchPage> {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10)),
                                       child: 
-                                      Image.network("http://20.20.22.241:5000/images/${snapshot.data![index].thumbnail}",height: MediaQuery.of(context).size.width*0.3,
+                                      Image.network("http://192.168.1.15:5000/images/${snapshot.data![index].thumbnail}",height: MediaQuery.of(context).size.width*0.3,
                                        width: 110,
                                        fit: BoxFit.fill,),
                                   ),
@@ -271,7 +272,9 @@ class _SearchPageState extends State<SearchPage> {
                                   child: IconButton(
                                     icon: Icon(Icons.location_on_outlined,
                                     color: Colors.white,),
-                                     onPressed: () {  
+                                     onPressed: () {
+                                      List<String> shops = snapshot.data![index].shops;
+                                      Navigator.push(context, CupertinoPageRoute(builder: (context) => ShopsList(shops: shops)));
                                       print("${snapshot.data?[index].shops}");
                                      },
                                   ),

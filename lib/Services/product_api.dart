@@ -8,7 +8,7 @@ class ProductApiCall{
   Future<List<ProductModel>> searchProductsWithFilter( ProductFilter filtre) async{
     List<ProductModel> products = [];
     try{
-    const String url = "http://20.20.22.241:5000/products/searchProductsWithFilter";
+    const String url = "http://192.168.1.15:5000/products/searchProductsWithFilter";
     final http.Response resp= await http.post(Uri.parse(url),
     headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8'},
     body: jsonEncode(filtre.toJson()));
@@ -39,7 +39,7 @@ class ProductApiCall{
   Future<ProductModel> getProductById( String identifier) async {
     ProductModel product ;
     try{
-       String url = "http://20.20.22.241:5000/products/getProduct/${identifier}";
+       String url = "http://192.168.1.15:5000/products/getProduct/${identifier}";
        final http.Response resp= await http.get(Uri.parse(url),
        headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8'},
        );
@@ -62,7 +62,7 @@ class ProductApiCall{
   Future<ProductModel> getProductByBarCode( String identifier) async {
     ProductModel product ;
     try{
-       String url = "http://20.20.22.241:5000/products/getProductByBarCode?barcode=${identifier}";
+       String url = "http://192.168.1.15:5000/products/getProductByBarCode?barcode=${identifier}";
        final http.Response resp= await http.get(Uri.parse(url),
        headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8'},
        );

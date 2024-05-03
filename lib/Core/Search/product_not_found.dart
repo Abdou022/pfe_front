@@ -46,63 +46,69 @@ class _SearchState extends State<ProductNotFound> {
       ),
       body: SafeArea(
         child: Center(
-          child: Column(
-            children: [
-              Expanded(child: SizedBox(),flex: 1,),
-              Image.asset("assets/images/cancel.png",width: 250,),
-              SizedBox(height: 10,),
-              Text("Oops, This product doesn't exist in the database",style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                      ),),
-                      SizedBox(height: 50,),
-              SizedBox(
-                  width: 300,
-                  height: 50,
-                  child: CupertinoButton(
-                    color: const Color(0xFFDF9A4F),
-                    onPressed: () {
-                      scanBarCode();
-                    },
-                    child: const Text(
-                      "Scan Again",
-                      style: TextStyle(
-                        color: Color(0xFF965D1A),
-                        fontSize: 14,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(child: SizedBox(),flex: 1,),
+                Image.asset("assets/images/404_error.png",width: 250,),
                 SizedBox(height: 10,),
+                Text("Oops, This product doesn't exist \nin the database",textAlign: TextAlign.center,
+                  style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                        ),),
+                        SizedBox(height: 50,),
                 SizedBox(
-                  width: 300,
-                  height: 50,
-                  child: CupertinoButton(
-                    color: const Color(0xFFDF9A4F),
-                    onPressed: () {
-                      //scanBarCode();
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: ((context) => MainScreenPage())));
-                    },
-                    child: const Text(
-                      "Return To Home Page",
-                      style: TextStyle(
-                        color: Color(0xFF965D1A),
-                        fontSize: 14,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
+                    width: 300,
+                    height: 50,
+                    child: CupertinoButton(
+                      color: const Color(0xFFDF9A4F),
+                      onPressed: () {
+                        scanBarCode();
+                      },
+                      child: const Text(
+                        "Scan Again",
+                        style: TextStyle(
+                          color: Color(0xFF965D1A),
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              Expanded(child: SizedBox(),flex: 3,),
-            ],
+                  SizedBox(height: 10,),
+                  SizedBox(
+                    width: 300,
+                    height: 50,
+                    child: CupertinoButton(
+                      color: const Color(0xFFDF9A4F),
+                      onPressed: () {
+                        //scanBarCode();
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: ((context) => MainScreenPage())));
+                      },
+                      child: const Text(
+                        "Return To Home Page",
+                        style: TextStyle(
+                          color: Color(0xFF965D1A),
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                Expanded(child: SizedBox(),flex: 3,),
+              ],
+            ),
           )
           /*Text(
             barcode == "-1" ? "Unable to read data": barcode
