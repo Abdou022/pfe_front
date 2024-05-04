@@ -1,4 +1,5 @@
 
+
 import 'package:find_me/Core/Search/osm_map.dart';
 import 'package:find_me/Models/product_model.dart';
 import 'package:find_me/Services/product_api.dart';
@@ -104,7 +105,7 @@ class _ProductDetailState extends State<ProductDetail> {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
-                                  "http://192.168.1.15:5000/images/${snapshot.data?.images[index]}",
+                                  "${snapshot.data?.images[index]}",
                                   fit: BoxFit.fill,
                                   width:
                                       MediaQuery.of(context).size.width * 0.85,

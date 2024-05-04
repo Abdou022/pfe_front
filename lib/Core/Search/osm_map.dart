@@ -6,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:permission_handler/permission_handler.dart';
 
 class ShopMap extends StatefulWidget {
   const ShopMap({super.key, required this.name});

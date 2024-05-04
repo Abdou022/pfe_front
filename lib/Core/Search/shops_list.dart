@@ -7,13 +7,14 @@ import 'package:permission_handler/permission_handler.dart';
 class ShopsList extends StatefulWidget {
   final List<String> shops;
   const ShopsList({super.key, required this.shops});
+  
 
   @override
   State<ShopsList> createState() => _ShopsListState();
 }
 
 class _ShopsListState extends State<ShopsList> {
-  
+  late String shopName;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +36,9 @@ class _ShopsListState extends State<ShopsList> {
             onTap: ()async{
                                         var status = await Permission.location.request();
                                         if(status.isGranted){
-                                          Navigator.push(context, CupertinoPageRoute(builder: (context) => ShopMap( name: '${widget.shops[index]}',)));
+                                          shopName=widget.shops[index];
+                                          print("${shopName}");
+                                          Navigator.push(context, CupertinoPageRoute(builder: (context) => ShopMap(name: shopName)));
                                         }else {
                                           print("Location permission is required to use the app.");
                                           }

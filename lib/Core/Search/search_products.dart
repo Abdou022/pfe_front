@@ -142,7 +142,7 @@ class _SearchPageState extends State<SearchPage> {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10)),
                                       child: 
-                                      Image.network("http://192.168.1.15:5000/images/${snapshot.data![index].thumbnail}",height: MediaQuery.of(context).size.width*0.3,
+                                      Image.network("${snapshot.data![index].thumbnail}",height: MediaQuery.of(context).size.width*0.3,
                                        width: 110,
                                        fit: BoxFit.fill,),
                                   ),

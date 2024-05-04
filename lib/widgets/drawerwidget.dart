@@ -1,8 +1,11 @@
 
+import 'package:find_me/Core/Drawer_Items_Pages/categories.dart';
+import 'package:find_me/Core/Drawer_Items_Pages/nearest_shops.dart';
 import 'package:find_me/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
@@ -102,7 +105,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
         ),
         ListTile(
-          onTap: () {} ,
+          onTap: () async {
+            var status = await Permission.location.request();
+            if(status.isGranted){
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => NearestShops()));
+            }else {
+              print("Location permission is required to use the app.");
+            }
+          } ,
           leading: const Icon(
             CupertinoIcons.cart,
             color: Colors.black,
@@ -117,7 +127,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
         ),
         ListTile(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) => CategoriesPage()));
+          },
           leading: const Icon(
             CupertinoIcons.collections,
             color: Colors.black,

@@ -46,7 +46,7 @@ class ProductApiCall{
        if(resp.statusCode == 200){
         dynamic jsonResponse = json.decode(resp.body);
         product = ProductModel.fromJson(jsonResponse);
-        print("succes");
+        print("succes getProductById");
         return product;
        }
        else{
