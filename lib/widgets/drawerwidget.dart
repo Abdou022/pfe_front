@@ -1,11 +1,16 @@
 
 import 'package:find_me/Core/Drawer_Items_Pages/categories.dart';
 import 'package:find_me/Core/Drawer_Items_Pages/nearest_shops.dart';
+import 'package:find_me/Core/Drawer_Items_Pages/profile.dart';
 import 'package:find_me/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
@@ -15,11 +20,33 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
+  late SharedPreferences prefs ;
+  late String email = '';
+  late String name= '';
+  late String profilePic= '';
+  late String identifier= "";
+
   @override
   void initState() {
     super.initState();
     /*SystemChrome.setEnabledSystemUIMode(
         SystemUiMode.immersive); // tna7i barre mta3 wa9t wel buttons mel louta*/
+        initSharedPref().then((_){
+          var token =prefs.getString("userToken");
+        Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(token!);
+       setState(() {
+          email = jwtDecodedToken['email'];
+          name = jwtDecodedToken['name'];
+          profilePic = jwtDecodedToken['image'];
+          print(profilePic);
+          identifier = jwtDecodedToken['id'];
+       });
+        });
+        
+  }
+
+  Future<void> initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
   }
 
   @override
@@ -60,7 +87,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
         ),
         ListTile(
-          onTap: () {} ,
+          onTap: () {
+            Navigator.push(context, CupertinoPageRoute(builder:(context) => MyProfile(id: identifier),));
+          } ,
           leading: const Icon(
             CupertinoIcons.person_circle,
             color: Colors.black,
@@ -176,18 +205,19 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               CircleAvatar(
                 radius: 50,
                 child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/profile2.jpg',
+                  child: CachedNetworkImage(
+                    placeholder:(context, url) => CircularProgressIndicator(),
+                    errorWidget:(context, url, error) => Icon(Icons.error),
                     fit: BoxFit.cover,
-                    width: double.infinity,
+                    width: double.infinity, imageUrl: "https://res.cloudinary.com/ddsidlz5b/image/upload/v1715186510/vbxc2pcvtbh3egbrsejl.png",
                   ),
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                'Khadija Bensaad',
+               Text(
+                name,
                 style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     color: Colors.black,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w600),
@@ -195,10 +225,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               const SizedBox(
                 height: 9,
               ),
-              const Text(
-                'Khadijabensaad4@gmail.com',
+               Text(
+                email,
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Poppins',
                   color: Colors.black,

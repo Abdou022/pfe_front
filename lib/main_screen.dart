@@ -19,6 +19,7 @@ class MainScreenPage extends StatefulWidget {
 class _MainScreenPageState extends State<MainScreenPage> {
   ProductFilter? requette = ProductFilter(name: '', size: [],colors: '', sortBy: '', sortOrder: 'desc', region: '');
   TextEditingController _searchController = TextEditingController();
+  
 
   void _handleFilterSubmitted(ProductFilter data) {
     setState(() {
@@ -32,6 +33,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
     _searchController = TextEditingController();
     super.initState();
   }
+
   @override
   void dispose() {
     // Dispose the controller when the page is disposed
@@ -173,6 +175,8 @@ class _MainScreenPageState extends State<MainScreenPage> {
                 child: CupertinoButton(
                   color: const Color(0xFFDF9A4F),
                   onPressed: () {
+                    //var token= _prefs.getString("token");
+                    //print("home token: ${token}");
                     Navigator.push(
                         context,
                         CupertinoPageRoute(

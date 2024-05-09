@@ -1,8 +1,15 @@
+import 'dart:convert';
+
 import 'package:find_me/Auth/forgotPassword.dart';
 import 'package:find_me/Auth/signUp.dart';
+import 'package:find_me/Services/auth_api.dart';
 import 'package:find_me/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,6 +19,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  AuthCallAPi _authCallAPi = AuthCallAPi();
   late TextEditingController _emailcntrl ;
   late TextEditingController _passwordcntrl;
   bool isObscured = true;
@@ -20,14 +28,45 @@ class _LoginPageState extends State<LoginPage> {
   bool _hasErrorEmail = false;
   bool _hasErrorPassword = false;
   int _counterTesterError= 0;
+  String message='';
+  late SharedPreferences prefs ;
 
   //tsirelha exec 9bal ma l'app tbuildi
   @override
   void initState() {
+    
     _emailcntrl = TextEditingController();
     _passwordcntrl = TextEditingController();
-    
+    initSharedPref();
     super.initState();
+  }
+
+  void initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  
+  Future<void> loginUser () async {
+    var reqBody = jsonEncode({
+      "email": _emailcntrl.text,
+      "password": _passwordcntrl.text
+    });
+    String url = 'http://192.168.1.15:5000/auth/login';
+    var response = await http.post(Uri.parse(url),
+    headers: {'Content-Type': 'application/json'},
+    body: reqBody);
+    var jsonResponse = jsonDecode(response.body);
+    setState(() {
+      message = jsonResponse["message"];
+    });
+    print(message);
+    if(jsonResponse["status"]){
+      var userToken = jsonResponse['token'];
+      prefs.setString("userToken", userToken);
+      //bech nbadlou .push ba3d ma na3mlou les tests
+      Navigator.push(context, CupertinoPageRoute(builder: (context)=>const  MainScreenPage()));
+    }
+    //Fluttertoast.showToast(msg: message,);
   }
 
   //libere l'espace memoire
@@ -272,7 +311,15 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 onPressed: () {
                                   if (_emailcntrl.text.isNotEmpty && (_emailcntrl.text.contains('@') && _emailcntrl.text.contains('.'))&&(_passwordcntrl.text.length>7)){
-                                    Navigator.push(context, CupertinoPageRoute(builder: (context)=>const  MainScreenPage()));
+                                    //lenna win bech nekhdmou
+                                     loginUser().whenComplete(() => Fluttertoast.showToast(
+                                      msg: message,
+                                      toastLength: Toast.LENGTH_LONG,
+                                      backgroundColor: Colors.black.withOpacity(0.7),
+                                      ));
+                                    //Navigator.push(context, CupertinoPageRoute(builder: (context)=>const  MainScreenPage()));
+                                    //_authCallAPi.login();
+                                    
                                   }
                                   setState(() {
                                     _counterTesterError +=1;

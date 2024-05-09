@@ -1,5 +1,7 @@
+import 'package:find_me/Auth/login.dart';
 import 'package:find_me/main_screen.dart';
 import 'package:find_me/splash_screen.dart';
+import 'package:find_me/starting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MainScreenPage(),
+      home: const OnBoardingOne(),
     );
   }
 }

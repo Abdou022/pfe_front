@@ -2,6 +2,7 @@
 
 import 'package:find_me/Core/Search/osm_map.dart';
 import 'package:find_me/Models/product_model.dart';
+import 'package:find_me/Services/auth_api.dart';
 import 'package:find_me/Services/product_api.dart';
 import 'package:find_me/widgets/colors_help.dart';
 import 'package:find_me/widgets/drawerwidget.dart';
