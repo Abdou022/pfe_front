@@ -202,15 +202,24 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           child: Container(
             padding: const EdgeInsets.only(bottom: 24,),
             child: Column(children: [
+              profilePic !="" ?
               CircleAvatar(
+                backgroundColor: Color(0xFFFDF1E1),
                 radius: 50,
                 child: ClipOval(
                   child: CachedNetworkImage(
-                    placeholder:(context, url) => CircularProgressIndicator(),
+                    placeholder:(context, url) => CircularProgressIndicator(color: Color(0xFF965D1A),),
                     errorWidget:(context, url, error) => Icon(Icons.error),
                     fit: BoxFit.cover,
-                    width: double.infinity, imageUrl: "https://res.cloudinary.com/ddsidlz5b/image/upload/v1715186510/vbxc2pcvtbh3egbrsejl.png",
+                    width: double.infinity, imageUrl: profilePic,
                   ),
+                ),
+              ) : 
+              CircleAvatar(
+                backgroundColor: Color(0xFFFDF1E1),
+                radius: 50,
+                child: ClipOval(
+                  child: Image.asset("assets/images/profile2.jpg"),
                 ),
               ),
               const SizedBox(height: 12),

@@ -1,7 +1,9 @@
+import 'package:find_me/Auth/login.dart';
 import 'package:find_me/Services/auth_api.dart';
 import 'package:find_me/widgets/drawerwidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key, required this.id});
@@ -14,6 +16,17 @@ class MyProfile extends StatefulWidget {
 class _MyProfileState extends State<MyProfile> {
   bool isLoading = true;
   AuthCallAPi _authCallAPi = AuthCallAPi();
+  late SharedPreferences prefs ;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    initSharedPref();
+    super.initState();
+  }
+  void initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +133,10 @@ class _MyProfileState extends State<MyProfile> {
                                 backgroundColor:
                                     const Color(0xFFDF9A4F), // background color
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                prefs.setBool("activated", false);
+                                Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder:(context) => LoginPage(),), (route) => false);
+                              },
                               child: Text(
                                 "LOG OUT",
                                 style: TextStyle(

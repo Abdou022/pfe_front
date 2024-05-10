@@ -30,7 +30,7 @@ class SignUpComplete extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: (){
                     
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => const MainScreenPage(),));
+                    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const MainScreenPage(),));
                   },
                   style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(

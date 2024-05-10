@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:find_me/Auth/forgotPassword.dart';
 import 'package:find_me/Auth/signUp.dart';
-import 'package:find_me/Services/auth_api.dart';
 import 'package:find_me/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  AuthCallAPi _authCallAPi = AuthCallAPi();
   late TextEditingController _emailcntrl ;
   late TextEditingController _passwordcntrl;
   bool isObscured = true;
@@ -63,8 +61,9 @@ class _LoginPageState extends State<LoginPage> {
     if(jsonResponse["status"]){
       var userToken = jsonResponse['token'];
       prefs.setString("userToken", userToken);
+      prefs.setBool("activated", true);
       //bech nbadlou .push ba3d ma na3mlou les tests
-      Navigator.push(context, CupertinoPageRoute(builder: (context)=>const  MainScreenPage()));
+      Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context)=>const  MainScreenPage()),(route)=>false);
     }
     //Fluttertoast.showToast(msg: message,);
   }

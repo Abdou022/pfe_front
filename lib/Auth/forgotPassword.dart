@@ -84,7 +84,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       setState(() {
                         _email = _emailcntrl.text;
                         if (_email.isNotEmpty){
-                        Navigator.push(context, CupertinoPageRoute(builder: (context) => const RegisterVerification(),));}
+                        //Navigator.push(context, CupertinoPageRoute(builder: (context) => const RegisterVerification(),));
+                        }
                       });
                     },
                     style: ElevatedButton.styleFrom(

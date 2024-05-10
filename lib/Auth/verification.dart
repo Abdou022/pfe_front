@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:find_me/Auth/signupComplete.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterVerification extends StatefulWidget {
-  const RegisterVerification({super.key});
+  const RegisterVerification({super.key, required this.userId});
+  final String userId;
 
   @override
   State<RegisterVerification> createState() => _RegisterVerificationState();
@@ -19,6 +25,8 @@ class _RegisterVerificationState extends State<RegisterVerification> {
   late TextEditingController controller3;
   late TextEditingController controller4;
   late TextEditingController controller5;
+  String message ="";
+  late SharedPreferences prefs ;
 
   @override
   void initState() {
@@ -31,6 +39,7 @@ class _RegisterVerificationState extends State<RegisterVerification> {
     controller3 = TextEditingController();
     controller4 = TextEditingController();
     controller5 = TextEditingController();
+    initSharedPref();
     super.initState();
   }
 
@@ -46,6 +55,29 @@ class _RegisterVerificationState extends State<RegisterVerification> {
     controller4.dispose();
     controller5.dispose();
     super.dispose();
+  }
+
+  void initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> otpVerification(String otp) async {
+    var reqBody = jsonEncode({
+      "userId": widget.userId,
+      "otp": otp
+    });
+    String url = 'http://192.168.1.15:5000/auth/otp';
+    var response = await http.post(Uri.parse(url),
+    headers: {'Content-Type': 'application/json'},
+    body: reqBody);
+    var jsonResponse = jsonDecode(response.body);
+    setState(() {
+      message= jsonResponse["message"];
+    });
+    if(jsonResponse["status"]){
+      prefs.setBool("activated", true);
+      Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context)=>const  SignUpComplete()), (route)=> false);
+    }
   }
 
   void nextField(String value, FocusNode focusNode) {
@@ -68,21 +100,14 @@ class _RegisterVerificationState extends State<RegisterVerification> {
   Widget build(BuildContext context) {
     return   Scaffold(
       backgroundColor: const Color(0xFFFDF1E1),
-      appBar: AppBar(
-        backgroundColor: const Color((0xFFFDF1E1)),
-        elevation: 0,
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-        }, 
-        icon: const Icon(CupertinoIcons.back, color: Color((0xFF965D1A)),)),
-      ),
+      
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 90),
               Image.asset("assets/images/findMeFleche.PNG",),
               const SizedBox(height: 10),
               const Text('Verification',style: TextStyle(fontSize: 26,fontFamily: 'Poppins',fontWeight: FontWeight.bold,color: Color(0xFFDF9A4F)),),
@@ -92,7 +117,8 @@ class _RegisterVerificationState extends State<RegisterVerification> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("This Code will Expire in ",style: TextStyle(fontFamily: 'Poppins',fontSize: 13,fontWeight: FontWeight.w600)),
-                  TweenAnimationBuilder(tween: Tween(begin: 60.0, end: 0), duration: const Duration(seconds: 60), builder:(context, value, child) => Text("00:${value.toInt()}",style: const TextStyle(fontFamily: 'Poppins',fontSize: 13,fontWeight: FontWeight.w600,color: Color(0xFFDF9A4F))),)
+                  TweenAnimationBuilder(tween: Tween(begin: 300.0, end: 0),duration: const Duration(seconds: 300), builder: (context, value, child) => Text("${(value ~/ 60).toString().padLeft(2, '0')}:${(value % 60).toInt().toString().padLeft(2, '0')}",style: const TextStyle(fontFamily: 'Poppins', fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFFDF9A4F)),),
+)
                 ],
               ),
               const Expanded(flex: 1,child: SizedBox(),),
@@ -261,7 +287,12 @@ class _RegisterVerificationState extends State<RegisterVerification> {
                   onPressed: (){
                     String content = getContent();
                     print(content);
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => const SignUpComplete(),));
+                    print(widget.userId);
+                    //Navigator.push(context, CupertinoPageRoute(builder: (context) => const SignUpComplete(),));
+                    otpVerification(content).whenComplete(() => Fluttertoast.showToast(msg: message,
+                    toastLength: Toast.LENGTH_LONG,
+                    backgroundColor:Colors.black.withOpacity(0.7),
+                    ));
                   },
                   style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
