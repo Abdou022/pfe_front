@@ -1,15 +1,19 @@
 
 
+import 'dart:convert';
+
 import 'package:find_me/Core/Search/osm_map.dart';
 import 'package:find_me/Models/product_model.dart';
-import 'package:find_me/Services/auth_api.dart';
 import 'package:find_me/Services/product_api.dart';
 import 'package:find_me/widgets/colors_help.dart';
 import 'package:find_me/widgets/drawerwidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:readmore/readmore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class ProductDetail extends StatefulWidget {
   const ProductDetail({super.key, required this.identifier});
@@ -24,7 +28,48 @@ class _ProductDetailState extends State<ProductDetail> {
   HelperFunctions _helperFunctions = HelperFunctions();
   String id= "";
   int barcode= 0;  
-  bool _favoriteTapped = false;
+  bool isFavorite = false;
+  late SharedPreferences prefs ;
+  late var token = "";
+  String message='';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    initSharedPref().then((_){
+       setState(() {
+          token =prefs.getString("userToken")!;
+       });
+        });
+    super.initState();
+  }
+
+  Future<void> initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> addToFavorites(String prodId) async {
+    await initSharedPref();
+    var reqBody = jsonEncode({
+      'prodId': prodId
+    });
+    String url = 'http://192.168.1.15:5000/auth/addToFavorites';
+    var response = await http.put(Uri.parse(url),
+    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ${token}'},
+    body: reqBody);
+    var jsonResponse = jsonDecode(response.body);
+    setState(() {
+      message = jsonResponse["message"];
+    });
+    if(jsonResponse["status"]){
+      if(message=="Product deleted from favorites."){
+        isFavorite = false;
+      }else{
+        isFavorite= true;
+      }
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +115,8 @@ class _ProductDetailState extends State<ProductDetail> {
               builder: (context, snapshot) {
                 
                 if (snapshot.hasData) {
+                  
+                  isFavorite = snapshot.data!.isFavorite;
                   //List<String> images = snapshot.data!.images;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,9 +203,13 @@ class _ProductDetailState extends State<ProductDetail> {
                               ),
                               IconButton(onPressed: (){
                                 setState(() {
-                                  _favoriteTapped = !_favoriteTapped;
+                                  addToFavorites(snapshot.data!.id).whenComplete(() => Fluttertoast.showToast(
+                                      msg: message,
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      backgroundColor: Colors.black.withOpacity(0.7),
+                                      ));;
                                 });
-                              }, icon: Icon(CupertinoIcons.heart_fill,color: _favoriteTapped ? Colors.red : Colors.black26,))
+                              }, icon: Icon(CupertinoIcons.heart_fill,color: isFavorite ? Colors.red : Colors.black26,))
                             ],
                           ),
                         ),

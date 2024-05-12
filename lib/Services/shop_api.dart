@@ -1,8 +1,19 @@
 import 'dart:convert';
 import 'package:find_me/Models/shop_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ShopApiCall {
+  late SharedPreferences prefs ;
+
+  ShopApiCall() {
+    initSharedPref(); // Call initSharedPref in the constructor
+  }
+
+  Future<void> initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
+  }
+
 Future<dynamic> getShopByName(String name) async {
   late ShopModel shop ;
     try{
@@ -76,8 +87,12 @@ Future<List<dynamic>> CalculateDistance ( double latitude, double longitude) asy
 
 Future<List<dynamic>> fetchShopProducts(String shopId) async {
   final url = 'http://192.168.1.15:5000/shops/getShopProducts/$shopId';
+  await initSharedPref();
+    var token = prefs.getString("userToken");
   try{
-  final response = await http.get(Uri.parse(url));
+  final response = await http.get(Uri.parse(url),
+  headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer ${token}'},
+  );
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);

@@ -2,40 +2,18 @@
 import 'dart:convert';
 import 'package:find_me/Models/user_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthCallAPi {
+  late SharedPreferences prefs ;
 
-  Future<void> login() async {
-  final url = 'http://192.168.1.15:5000/auth/login'; // Replace 'your_api_url' with the actual URL of your API
-  final body = jsonEncode({
-    'email': 'abderrahmen.attia08@gmail.com', // Replace with the actual email
-    'password': 'abdou123', // Replace with the actual password
-  });
-
-  final response = await http.post(
-    Uri.parse(url),
-    headers: {'Content-Type': 'application/json'},
-    body: body,
-  );
-
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    // Process the response data
-    final token = data['token'];
-    final information = data['information'];
-    print("token: ${token}");
-    print("information: ${information}");
-     // Save token and information in SharedPreferences
-    /*final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
-    await prefs.setString('information', jsonEncode(information));*/
-    // ...
-  } else {
-    // Handle error response
-    final errorMessage = jsonDecode(response.body)['message'];
-    print('Login failed: $errorMessage');
+  AuthCallAPi() {
+    initSharedPref(); // Call initSharedPref in the constructor
   }
-}
+
+  Future<void> initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
+  }
 
 Future<UserModel> getUserById( String identifier) async {
     UserModel user ;
@@ -59,4 +37,6 @@ Future<UserModel> getUserById( String identifier) async {
     }
     throw Exception('Request failed.');
   }
+
+  
 }

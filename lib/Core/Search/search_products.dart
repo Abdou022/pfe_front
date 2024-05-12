@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:find_me/Core/Search/osm_map.dart';
 import 'package:find_me/Core/Search/product_detail.dart';
 import 'package:find_me/Core/Search/shops_list.dart';
@@ -9,6 +11,9 @@ import 'package:find_me/widgets/drawerwidget.dart';
 import 'package:find_me/widgets/searchfieldwidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key, this.req});
@@ -30,6 +35,10 @@ class _SearchPageState extends State<SearchPage> {
       region: '');
   TextEditingController _searchController = TextEditingController();
   int? nb = 0;
+  bool isFavorite = false;
+  late SharedPreferences prefs ;
+  late var token = "";
+  String message='';
 
   void _handleFilterSubmitted(ProductFilter data) {
     setState(() {
@@ -41,6 +50,11 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     // TODO: implement initState
     _searchController = TextEditingController();
+    initSharedPref().then((_){
+       setState(() {
+          token =prefs.getString("userToken")!;
+       });
+        });
     super.initState();
   }
 
@@ -51,9 +65,42 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
+
+  Future<void> initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> addToFavorites(String prodId) async {
+    await initSharedPref();
+    var reqBody = jsonEncode({
+      'prodId': prodId
+    });
+    String url = 'http://192.168.1.15:5000/auth/addToFavorites';
+    var response = await http.put(Uri.parse(url),
+    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ${token}'},
+    body: reqBody);
+    var jsonResponse = jsonDecode(response.body);
+    setState(() {
+      message = jsonResponse["message"];
+    });
+    if(jsonResponse["status"]){
+      if(message=="Product deleted from favorites."){
+        isFavorite = false;
+      }else{
+        isFavorite= true;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return RefreshIndicator(
+       onRefresh: () async {
+        await Future.delayed(const Duration(seconds: 1));
+        setState(() {});
+       },color: Color(0xFF965D1A),
+       backgroundColor: Color(0xFFFDF1E1),
+       child: Scaffold(
       backgroundColor: const Color(0xFFFDF1E1),
       drawer: DrawerWidget(),
       appBar: AppBarWidget(
@@ -67,8 +114,9 @@ class _SearchPageState extends State<SearchPage> {
               children: [
                 SearchFieldWidget(cntrl: _searchController),
                 
-                FutureBuilder<List<ProductModel>>(future: _productApiCall.searchProductsWithFilter(ProductFilter(name: widget.req?.name,colors: widget.req?.colors,sortBy: widget.req?.sortBy, sortOrder: widget.req?.sortOrder,region: widget.req?.region,size: widget.req?.size)),
+                FutureBuilder<List<ProductModel>>(future: _productApiCall.searchProductsWithFilter(ProductFilter(name: widget.req?.name,colors: widget.req?.colors,sortBy: widget.req?.sortBy, sortOrder: widget.req?.sortOrder,region: widget.req?.region,size: widget.req?.size, )),
                  builder: (context, snapshot) {
+                  print(snapshot.data);
                   if(snapshot.hasData){
                     nb= snapshot.data?.length;
                     return Column(
@@ -100,6 +148,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     IconButton(
                         onPressed: () {
+                          
                           requette = ProductFilter(
                               name: _searchController.text,
                               size: requette?.size,
@@ -214,6 +263,11 @@ class _SearchPageState extends State<SearchPage> {
                                           ),
                                           InkWell(
                                             onTap: () {
+                                              addToFavorites(snapshot.data![index].id).whenComplete(() => Fluttertoast.showToast(
+                                               msg: message,
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              backgroundColor: Colors.black.withOpacity(0.7),
+                                              ));;
                                               /*
                                               // Check if the product is in the favorite list
                                               if (isInFavorites) {
@@ -232,10 +286,10 @@ class _SearchPageState extends State<SearchPage> {
                                             },
                                             child: Icon(
                                               Icons.favorite_rounded,
-                                              color: Colors.grey,
-                                              /*isInFavorites                           //khedmet khadija
+                                              color: 
+                                              snapshot.data![index].isFavorite                           //khedmet khadija
                                                   ? Colors.red
-                                                  : null,*/
+                                                  : Colors.grey,
                                               size: 20,
                                             ),
                                           ),
@@ -324,6 +378,6 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
       ),
-    );
+    ),);
   }
 }

@@ -2,15 +2,29 @@ import 'package:find_me/Models/prod_filter.dart';
 import 'package:find_me/Models/product_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class ProductApiCall{
+  late SharedPreferences prefs ;
 
-  Future<List<ProductModel>> searchProductsWithFilter( ProductFilter filtre) async{
+  ProductApiCall() {
+    initSharedPref(); // Call initSharedPref in the constructor
+  }
+
+  Future<void> initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<List<ProductModel>> searchProductsWithFilter( ProductFilter filtre ) async{
+    await initSharedPref();
     List<ProductModel> products = [];
+    var token = prefs.getString("userToken");
     try{
     const String url = "http://192.168.1.15:5000/products/searchProductsWithFilter";
+    
     final http.Response resp= await http.post(Uri.parse(url),
-    headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8'},
+    headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer ${token}'},
     body: jsonEncode(filtre.toJson()));
 
     if(resp.statusCode==200){
@@ -22,9 +36,11 @@ class ProductApiCall{
       print("region ${filtre.region}");
       print("size: ${filtre.size}");*/
       List<dynamic> jsonResponse = json.decode(resp.body);
+      print(jsonResponse);
       products = jsonResponse.map((item) => ProductModel.fromJson(item)).toList();
       //print("${products.length} Products recieved");
       //print("${resp.body}");
+      
       return products;
     }else {
       print("failed: ${resp.statusCode}");
@@ -37,11 +53,13 @@ class ProductApiCall{
 
 
   Future<ProductModel> getProductById( String identifier) async {
+    await initSharedPref();
     ProductModel product ;
+    var token = prefs.getString("userToken");
     try{
        String url = "http://192.168.1.15:5000/products/getProduct/${identifier}";
        final http.Response resp= await http.get(Uri.parse(url),
-       headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8'},
+       headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer ${token}'},
        );
        if(resp.statusCode == 200){
         dynamic jsonResponse = json.decode(resp.body);
@@ -60,26 +78,27 @@ class ProductApiCall{
   }
   
   Future<ProductModel> getProductByBarCode( String identifier) async {
+    await initSharedPref();
     ProductModel product ;
+    var token = prefs.getString("userToken");
     try{
        String url = "http://192.168.1.15:5000/products/getProductByBarCode?barcode=${identifier}";
        final http.Response resp= await http.get(Uri.parse(url),
-       headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8'},
+       headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer ${token}'},
        );
        if(resp.statusCode == 200){
         dynamic jsonResponse = json.decode(resp.body);
-        if (jsonResponse is List && jsonResponse.length > 0) {
-        product = ProductModel.fromJson(jsonResponse[0]);
+        product = ProductModel.fromJson(jsonResponse);
         print("succes");
-        return product;}
+        return product;
        }
        else{
        print("failure: ${resp.statusCode}");
        }
-       return ProductModel(id: '', price: -1, name: '', rating: -1, barcode: -1, thumbnail: '', images: [], colors: [], v: -1, brand: '', size: [], shops: [], description: '', category: [], createdAt: DateTime.now(), updatedAt: DateTime.now());
+       return ProductModel(id: '', price: -1, name: '', rating: -1, barcode: -1, thumbnail: '', images: [], colors: [], v: -1, brand: '', size: [], shops: [], description: '', category: [], createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false);
     }catch(error){
       print("$error");
-      return ProductModel(id: '', price: -1, name: '', rating: -1, barcode: -1, thumbnail: '', images: [], colors: [], v: -1, brand: '', size: [], shops: [], description: '', category: [], createdAt: DateTime.now(), updatedAt: DateTime.now());
+      return ProductModel(id: '', price: -1, name: '', rating: -1, barcode: -1, thumbnail: '', images: [], colors: [], v: -1, brand: '', size: [], shops: [], description: '', category: [], createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false);
     }
   }
 

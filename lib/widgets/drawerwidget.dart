@@ -1,5 +1,6 @@
 
 import 'package:find_me/Core/Drawer_Items_Pages/categories.dart';
+import 'package:find_me/Core/Drawer_Items_Pages/favorites.dart';
 import 'package:find_me/Core/Drawer_Items_Pages/nearest_shops.dart';
 import 'package:find_me/Core/Drawer_Items_Pages/profile.dart';
 import 'package:find_me/main_screen.dart';
@@ -119,7 +120,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
         ),
          ListTile(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) => FavoritesPage(),));
+          },
           leading: const Icon(
             CupertinoIcons.heart,
             color: Colors.black,

@@ -73,7 +73,7 @@ class _AppBArWidgetState extends State<AppBarWidget> {
                     builder: (BuildContext context, StateSetter setState) {
                   return SingleChildScrollView(
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.7,
+                      height: MediaQuery.of(context).size.height * 0.8,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
