@@ -66,7 +66,7 @@ class _RegisterVerificationState extends State<RegisterVerification> {
       "userId": widget.userId,
       "otp": otp
     });
-    String url = 'http://192.168.1.15:5000/auth/otp';
+    String url = 'http://192.168.1.16:5000/auth/otp';
     var response = await http.post(Uri.parse(url),
     headers: {'Content-Type': 'application/json'},
     body: reqBody);

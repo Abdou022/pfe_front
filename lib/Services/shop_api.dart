@@ -17,7 +17,7 @@ class ShopApiCall {
 Future<dynamic> getShopByName(String name) async {
   late ShopModel shop ;
     try{
-       String url = "http://192.168.1.15:5000/shops/getShopByName?name=${name}";
+       String url = "http://192.168.1.16:5000/shops/getShopByName?name=${name}";
        final http.Response resp= await http.get(Uri.parse(url),
        headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8'},
        );
@@ -42,7 +42,7 @@ Future<dynamic> getShopByName(String name) async {
 Future<ShopModel> getShopById(String id) async {
   late ShopModel shop ;
     try{
-       String url = "http://192.168.1.15:5000/shops/getShop/${id}";
+       String url = "http://192.168.1.16:5000/shops/getShop/${id}";
        final http.Response resp= await http.get(Uri.parse(url),
        headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8'},
        );
@@ -66,7 +66,7 @@ Future<ShopModel> getShopById(String id) async {
 }
 
 Future<List<dynamic>> CalculateDistance ( double latitude, double longitude) async {
-  String url = "http://192.168.1.15:5000/shops/CalculateDistance";
+  String url = "http://192.168.1.16:5000/shops/CalculateDistance";
   try{
     final response = await http.post(
         Uri.parse(url),
@@ -86,7 +86,7 @@ Future<List<dynamic>> CalculateDistance ( double latitude, double longitude) asy
 }
 
 Future<List<dynamic>> fetchShopProducts(String shopId) async {
-  final url = 'http://192.168.1.15:5000/shops/getShopProducts/$shopId';
+  final url = 'http://192.168.1.16:5000/shops/getShopProducts/$shopId';
   await initSharedPref();
     var token = prefs.getString("userToken");
   try{

@@ -21,7 +21,7 @@ class ProductApiCall{
     List<ProductModel> products = [];
     var token = prefs.getString("userToken");
     try{
-    const String url = "http://192.168.1.15:5000/products/searchProductsWithFilter";
+    const String url = "http://192.168.1.16:5000/products/searchProductsWithFilter";
     
     final http.Response resp= await http.post(Uri.parse(url),
     headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer ${token}'},
@@ -57,7 +57,7 @@ class ProductApiCall{
     ProductModel product ;
     var token = prefs.getString("userToken");
     try{
-       String url = "http://192.168.1.15:5000/products/getProduct/${identifier}";
+       String url = "http://192.168.1.16:5000/products/getProduct/${identifier}";
        final http.Response resp= await http.get(Uri.parse(url),
        headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer ${token}'},
        );
@@ -82,7 +82,7 @@ class ProductApiCall{
     ProductModel product ;
     var token = prefs.getString("userToken");
     try{
-       String url = "http://192.168.1.15:5000/products/getProductByBarCode?barcode=${identifier}";
+       String url = "http://192.168.1.16:5000/products/getProductByBarCode?barcode=${identifier}";
        final http.Response resp= await http.get(Uri.parse(url),
        headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer ${token}'},
        );

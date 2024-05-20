@@ -41,7 +41,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Future<dynamic> getFavorites() async {
     await initSharedPref();
     List<dynamic> favorites = [];
-    String url = 'http://192.168.1.15:5000/auth/getFavorites';
+    String url = 'http://192.168.1.16:5000/auth/getFavorites';
     var response = await http.get(
       Uri.parse(url),
       headers: {
@@ -61,7 +61,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Future<void> addToFavorites(String prodId) async {
     await initSharedPref();
     var reqBody = jsonEncode({'prodId': prodId});
-    String url = 'http://192.168.1.15:5000/auth/addToFavorites';
+    String url = 'http://192.168.1.16:5000/auth/addToFavorites';
     var response = await http.put(Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   Future<void> deleteAllFavorites() async {
     await initSharedPref();
-    String url = 'http://192.168.1.15:5000/auth/deleteAllFavorites';
+    String url = 'http://192.168.1.16:5000/auth/deleteAllFavorites';
     var response = await http.put(
       Uri.parse(url),
       headers: {

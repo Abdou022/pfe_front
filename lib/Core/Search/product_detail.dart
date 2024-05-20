@@ -53,7 +53,7 @@ class _ProductDetailState extends State<ProductDetail> {
     var reqBody = jsonEncode({
       'prodId': prodId
     });
-    String url = 'http://192.168.1.15:5000/auth/addToFavorites';
+    String url = 'http://192.168.1.16:5000/auth/addToFavorites';
     var response = await http.put(Uri.parse(url),
     headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ${token}'},
     body: reqBody);

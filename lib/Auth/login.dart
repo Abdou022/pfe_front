@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
       "email": _emailcntrl.text,
       "password": _passwordcntrl.text
     });
-    String url = 'http://192.168.1.15:5000/auth/login';
+    String url = 'http://192.168.1.16:5000/auth/login';
     var response = await http.post(Uri.parse(url),
     headers: {'Content-Type': 'application/json'},
     body: reqBody);

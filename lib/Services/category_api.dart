@@ -16,7 +16,7 @@ class CategoryApiCall {
 
   Future<List<CategoryModel>> getAllcategories() async {
     List<CategoryModel> categories = [];
-    const String url = "http://192.168.1.15:5000/categories/getAllCategories";
+    const String url = "http://192.168.1.16:5000/categories/getAllCategories";
     final http.Response resp = await http.get(Uri.parse(url));
     if(resp.statusCode==200){
       List<dynamic> jsonResponse = json.decode(resp.body);
@@ -30,7 +30,7 @@ class CategoryApiCall {
   }
 
   Future<List<dynamic>> fetchCategoryProducts(String shopId) async {
-  final url = 'http://192.168.1.15:5000/categories/getCategoryProducts/$shopId';
+  final url = 'http://192.168.1.16:5000/categories/getCategoryProducts/$shopId';
   await initSharedPref();
     var token = prefs.getString("userToken");
   try{
