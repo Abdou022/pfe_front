@@ -278,7 +278,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                   ],
                                                 ),
                                                 Text(
+                                                  snapshot.data?[index]["discountPrice"]==-1?
                                                   "${snapshot.data?[index]["price"]}"
+                                                  r" DT":"${snapshot.data?[index]["discountPrice"]}"
                                                   r" DT",
                                                   style: const TextStyle(
                                                     color: Colors.black,

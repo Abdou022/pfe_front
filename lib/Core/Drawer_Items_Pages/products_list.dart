@@ -118,6 +118,7 @@ class _ShopProductsListState extends State<ShopProductsList> {
                           final brand= prod['brand'];
                           final rating= prod['rating'];
                           final price= prod['price'];
+                          final discountPrice= prod['discountPrice'];
                           return  InkWell(
                             onTap: () {
                               print("Page search products: $id");
@@ -190,7 +191,10 @@ class _ShopProductsListState extends State<ShopProductsList> {
                                                 ],
                                               ),
                                               Text(
+                                                discountPrice==-1?
                                                 "$price"
+                                                r" DT":
+                                                "$discountPrice"
                                                 r" DT",
                                                 style: const TextStyle(
                                                   color: Colors.black,

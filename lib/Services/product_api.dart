@@ -95,11 +95,35 @@ class ProductApiCall{
        else{
        print("failure: ${resp.statusCode}");
        }
-       return ProductModel(id: '', price: -1, name: '', rating: -1, barcode: -1, thumbnail: '', images: [], colors: [], v: -1, brand: '', size: [], shops: [], description: '', category: [], createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false);
+       return ProductModel(id: '', price: -1, name: '', rating: -1, barcode: -1, thumbnail: '', images: [], colors: [], v: -1, brand: '', size: [], shops: [], description: '', category: [], createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false, discountPrice: -1);
     }catch(error){
       print("$error");
-      return ProductModel(id: '', price: -1, name: '', rating: -1, barcode: -1, thumbnail: '', images: [], colors: [], v: -1, brand: '', size: [], shops: [], description: '', category: [], createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false);
+      return ProductModel(id: '', price: -1, name: '', rating: -1, barcode: -1, thumbnail: '', images: [], colors: [], v: -1, brand: '', size: [], shops: [], description: '', category: [], createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false, discountPrice: -1);
     }
   }
 
+
+  Future<List<dynamic>> getDiscountedProducts() async {
+  final url = 'http://192.168.1.16:5000/discounts/getDiscountedProducts';
+  await initSharedPref();
+    var token = prefs.getString("userToken");
+  try{
+  final response = await http.get(Uri.parse(url),
+  headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer ${token}'},
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    List<dynamic> prods = data['products'];
+    return prods;
+  } else {
+    throw Exception('Failed to get discounted products');
+  }
+}catch(error){
+    throw Exception('Error: $error');
+  }
 }
+
+}
+
+

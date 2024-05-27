@@ -257,7 +257,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                               width: 16,
                                             ),
                                             Text(
-                                              snapshot.data?.price==90 ? '     ':   //condition remise discount promotion
+                                              snapshot.data?.discountPrice==-1 ? '     ':   //condition remise discount promotion
                                               ' ${snapshot.data?.price} DT',
                                               style: Theme.of(context)
                                                   .textTheme
@@ -270,14 +270,14 @@ class _ProductDetailState extends State<ProductDetail> {
                                             const SizedBox(width: 10),
 
                                             /// Sale Price
-                                            Text(
+                                            Text(snapshot.data?.discountPrice==-1?
                                               "${snapshot.data?.price}"
-                                              r" DT",
+                                              r" DT":"${snapshot.data?.discountPrice.toInt()} DT",
                                               style: const TextStyle(
                                                 color: Colors.black,
-                                                fontSize: 13,
+                                                fontSize: 15,
                                                 fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w700,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                           ],

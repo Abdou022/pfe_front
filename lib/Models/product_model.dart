@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
@@ -23,6 +25,7 @@ class ProductModel {
     DateTime updatedAt;
     int v;
     bool isFavorite;
+    double discountPrice;
 
     ProductModel({
         required this.id,
@@ -41,7 +44,8 @@ class ProductModel {
         required this.createdAt,
         required this.updatedAt,
         required this.v,
-        required this.isFavorite
+        required this.isFavorite,
+        required this.discountPrice
     });
 
     factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
@@ -61,7 +65,8 @@ class ProductModel {
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         v: json["__v"],
-        isFavorite: json["isFavorite"]
+        isFavorite: json["isFavorite"],
+        discountPrice: json["discountPrice"]?.toDouble()
     );
 
     Map<String, dynamic> toJson() => {

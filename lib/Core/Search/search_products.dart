@@ -249,7 +249,9 @@ class _SearchPageState extends State<SearchPage> {
                                             ],
                                           ),
                                           Text(
+                                            snapshot.data?[index].discountPrice== -1?
                                             "${snapshot.data?[index].price}"
+                                            r" DT":"${snapshot.data?[index].discountPrice.toInt()}"
                                             r" DT",
                                             style: const TextStyle(
                                               color: Colors.black,

@@ -72,7 +72,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
         ),
         IconButton(
           icon: const Icon(
-            Icons.now_wallpaper,
+            Icons.mic_outlined,
             size: 23,
             color: Color.fromARGB(255, 97, 84, 72),
           ),
