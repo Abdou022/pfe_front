@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:find_me/Core/Scan/qrcode_scan_page.dart';
 import 'package:find_me/Core/Search/search_fail.dart';
 import 'package:find_me/Core/Search/search_products.dart';
+import 'package:find_me/voice_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -78,7 +79,8 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
           ),
           splashRadius: 10,
           onPressed: () {
-            showImagePickerOption(context);
+            Navigator.push(context, CupertinoPageRoute(builder: (context) => const VoiceSearch(),));
+            //showImagePickerOption(context);
             setState(() {});
           },
         ),

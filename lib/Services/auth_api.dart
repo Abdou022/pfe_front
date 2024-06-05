@@ -18,7 +18,7 @@ class AuthCallAPi {
 Future<UserModel> getUserById( String identifier) async {
     UserModel user ;
     try{
-       String url = "http://192.168.1.16:5000/auth/getUser/${identifier}";
+       String url = "http://192.168.1.13:5000/auth/getUser/${identifier}";
        final http.Response resp= await http.get(Uri.parse(url),
        headers: <String, String> {'Content-Type': 'application/json; charset=UTF-8'},
        );

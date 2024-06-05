@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:find_me/Auth/resetPassword.dart';
 import 'package:find_me/Auth/signupComplete.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +8,17 @@ import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RegisterVerification extends StatefulWidget {
-  const RegisterVerification({super.key, required this.userId});
+class ForgetPasswordOTP extends StatefulWidget {
+  const ForgetPasswordOTP({super.key, required this.userId, required this.username, required this.useremail});
   final String userId;
+  final String username;
+  final String useremail;
 
   @override
-  State<RegisterVerification> createState() => _RegisterVerificationState();
+  State<ForgetPasswordOTP> createState() => _ForgetPasswordOTPState();
 }
 
-class _RegisterVerificationState extends State<RegisterVerification> {
+class _ForgetPasswordOTPState extends State<ForgetPasswordOTP> {
   late FocusNode pin2FocusNode;
   late FocusNode pin3FocusNode;
   late FocusNode pin4FocusNode;
@@ -31,6 +34,9 @@ class _RegisterVerificationState extends State<RegisterVerification> {
   late String name="";
 
 
+  void initSharedPref() async{
+    prefs = await SharedPreferences.getInstance();
+  }
 
   @override
   void initState() {
@@ -61,9 +67,21 @@ class _RegisterVerificationState extends State<RegisterVerification> {
     super.dispose();
   }
 
-  void initSharedPref() async{
-    prefs = await SharedPreferences.getInstance();
+  void nextField(String value, FocusNode focusNode) {
+    if (value.length==1){
+      focusNode.requestFocus();
+    }
   }
+
+  String getContent() {
+  String content = '';
+  content += controller1.text;
+  content += controller2.text;
+  content += controller3.text;
+  content += controller4.text;
+  content += controller5.text;
+  return content;
+}
 
   Future<void> otpVerification(String otp) async {
     var reqBody = jsonEncode({
@@ -77,19 +95,19 @@ class _RegisterVerificationState extends State<RegisterVerification> {
     var jsonResponse = jsonDecode(response.body);
     setState(() {
       message= jsonResponse["message"];
+      email= widget.useremail;
     });
     if(jsonResponse["status"]){
       prefs.setBool("activated", true);
-      Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context)=>const  SignUpComplete()), (route)=> false);
+      Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context)=> ResetPassword(email: email,)), (route)=> false);
     }
   }
 
   Future<void> resendOtpVerification() async {
-    var userToken = prefs.getString("userToken");
-    Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(userToken!);
+    
       setState(() {
-        email= jwtDecodedToken["email"];
-        name= jwtDecodedToken["name"];
+        email= widget.useremail;
+        name= widget.username;
       });
       print("userId: ${widget.userId}");
       print("email: ${email}");
@@ -110,22 +128,6 @@ class _RegisterVerificationState extends State<RegisterVerification> {
     });
     }
   }
-
-  void nextField(String value, FocusNode focusNode) {
-    if (value.length==1){
-      focusNode.requestFocus();
-    }
-  }
-
-  String getContent() {
-  String content = '';
-  content += controller1.text;
-  content += controller2.text;
-  content += controller3.text;
-  content += controller4.text;
-  content += controller5.text;
-  return content;
-}
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:find_me/Core/Drawer_Items_Pages/categories.dart';
 import 'package:find_me/Core/Drawer_Items_Pages/discounts.dart';
 import 'package:find_me/Core/Drawer_Items_Pages/favorites.dart';
 import 'package:find_me/Core/Drawer_Items_Pages/nearest_shops.dart';
+import 'package:find_me/Core/Drawer_Items_Pages/notifications.dart';
 import 'package:find_me/Core/Drawer_Items_Pages/profile.dart';
 import 'package:find_me/main_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -106,7 +107,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
         ),
         ListTile(
-          onTap: () {} ,
+          onTap: () {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) => Notifications(),));
+          } ,
           leading: const Icon(
             CupertinoIcons.bell,
             color: Colors.black,

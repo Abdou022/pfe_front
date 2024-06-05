@@ -62,7 +62,7 @@ class _SignUpState extends State<SignUp> {
   Future<void> signup(
       String username, String email, String password, File file) async {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://192.168.1.16:5000/auth/signup'));
+        'POST', Uri.parse('http://192.168.1.13:5000/auth/signup'));
     request.fields
         .addAll({'username': username, 'email': email, 'password': password});
     request.files.add(await http.MultipartFile.fromPath('file', file.path));

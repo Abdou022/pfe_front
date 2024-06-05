@@ -60,7 +60,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
     var reqBody = jsonEncode({
       "message": message.text
     });
-    String url = 'http://192.168.1.16:5000/chatbot/';
+    String url = 'http://192.168.1.13:5000/chatbot/';
     var response = await http.post(Uri.parse(url),
     headers: {'Content-Type': 'application/json'},
     body: reqBody);

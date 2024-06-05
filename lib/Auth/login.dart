@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
       "email": _emailcntrl.text,
       "password": _passwordcntrl.text
     });
-    String url = 'http://192.168.1.16:5000/auth/login';
+    String url = 'http://192.168.1.13:5000/auth/login';
     var response = await http.post(Uri.parse(url),
     headers: {'Content-Type': 'application/json'},
     body: reqBody);
@@ -282,7 +282,8 @@ class _LoginPageState extends State<LoginPage> {
                       color: Color(0xFF965D1A),fontFamily: 'Poppins',fontSize: 13,fontWeight: FontWeight.bold
                     ),
                           ),onPressed: () {
-                            Navigator.push(context, CupertinoPageRoute(builder:(context) => const ForgotPassword(),));
+                             Navigator.push(context, CupertinoPageRoute(builder:(context) => const ForgotPassword(),));
+                            //Navigator.push(context, CupertinoPageRoute(builder:(context) => const ForgotPassword(),));
                           },
                             /*bech nsal7ou les diagrammes de cas d'utilisation lkol w bech nkamlou les autres parties de rapport w bech nchofou hkeyet sign in w sign up w kif yitna7aw bech yitbadlou maahom hajet fi diagramme de classe */
                           ),

@@ -1,72 +1,62 @@
 import 'dart:convert';
-
-import 'package:find_me/Auth/forgetPasswordOTP.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:find_me/Auth/login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({super.key});
+class ResetPassword extends StatefulWidget {
+  const ResetPassword({super.key, required this.email});
+  final String email;
 
   @override
-  State<ForgotPassword> createState() => _ForgotPasswordState();
+  State<ResetPassword> createState() => _ResetPasswordState();
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
-
-  late TextEditingController _emailcntrl ;
-  String _emailErrorText = "";
-  bool _hasErrorEmail = false;
+class _ResetPasswordState extends State<ResetPassword> {
+  late TextEditingController _passwordcntrl ;
+  String _passwordErrorText = "";
+  bool _hasErrorPassword = false;
   int _counterTesterError = 0;
+  bool isObscured = true;
   late String message="";
 
   @override
   void initState() {
-    _emailcntrl = TextEditingController();
+    _passwordcntrl = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
-    _emailcntrl.dispose();
+    _passwordcntrl.dispose();
     super.dispose();
   }
 
-  Future<void> forgetPassword(String email) async{
+  Future<void> resetPassword(String pwd) async {
     var reqBody = jsonEncode({
-      "email": email
+      "email": widget.email,
+      "password": pwd
     });
-    String url = 'http://192.168.1.13:5000/auth/forgetPassword';
+    String url = 'http://192.168.1.13:5000/auth/resetPassword';
     var response = await http.post(Uri.parse(url),
     headers: {'Content-Type': 'application/json'},
     body: reqBody);
     var jsonResponse = jsonDecode(response.body);
+    print(jsonResponse["message"]);
     setState(() {
       message= jsonResponse["message"];
     });
     if(jsonResponse["status"]){
-      String userId= jsonResponse["userId"];
-      String name = jsonResponse["name"];
-      String email = jsonResponse["email"];
-      print(userId);
-      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context)=>  ForgetPasswordOTP(userId: userId, username: name, useremail: email)));
+      Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context)=>const  LoginPage()), (route)=> false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       backgroundColor:const Color(0xFFFDF1E1),
-      appBar: AppBar(
-        backgroundColor: const Color((0xFFFDF1E1)),
-        elevation: 0,
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-        }, 
-        icon: const Icon(CupertinoIcons.back, color: Color((0xFF965D1A)),)),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -74,29 +64,32 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 Image.asset("assets/images/findMeFleche.PNG"),
                 const SizedBox(height: 10),
-                const Text('Forgot Password',style: TextStyle(fontSize: 26,fontFamily: 'Poppins',fontWeight: FontWeight.bold,color: Color(0xFFDF9A4F)),),
+                const Text('Reset Password',style: TextStyle(fontSize: 26,fontFamily: 'Poppins',fontWeight: FontWeight.bold,color: Color(0xFFDF9A4F)),),
                 const SizedBox(height: 10,),
-                const Text("Please Enter Your Email and we will send a verification code to return your account",textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Poppins',fontSize: 13,fontWeight: FontWeight.w600),),
+                const Text("Please Enter Your New Password and we will reset your account password on Find Me",textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Poppins',fontSize: 13,fontWeight: FontWeight.w600),),
                 const SizedBox(height: 10),
-                Opacity(opacity: 0.9,child: Image.asset("assets/images/forgot_pwd.png",width: 200,)),
+                Opacity(opacity: 0.9,child: Image.asset("assets/images/Reset_password.png",width: 220,)),
                 const SizedBox(height: 30),
                 
             
                 TextField(
-                      controller: _emailcntrl,
+                      controller: _passwordcntrl,
                       cursorColor: const Color(0xFFDF9A4F),
                       style: const TextStyle(
                           fontFamily: 'Poppins', fontWeight: FontWeight.w600),
-                      keyboardType: TextInputType.emailAddress,
+                      obscureText: isObscured,
+                      textAlignVertical: TextAlignVertical.top,
                       decoration: InputDecoration(
-                        errorText: _emailErrorText,
+                        labelText: "Password",
+                        hintText: "Enter your password",
+                        errorText: _passwordErrorText,
                         errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(
-                                color: _hasErrorEmail
+                                color: _hasErrorPassword
                                     ? Colors.red
                                     : const Color(0xFFDF9A4F),
                                 width: 2),
@@ -104,23 +97,43 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(
-                                color: _hasErrorEmail
+                                color: _hasErrorPassword
                                     ? Colors.red
                                     : const Color(0xFFDF9A4F),
                                 width: 2),
                             gapPadding: 10),
-                        labelText: "Email",
-                        hintText: "Enter your email",
+                        errorStyle: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500),
                         labelStyle: const TextStyle(
                             color: Color(0xFFDF9A4F),
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             fontFamily: 'Poppins'),
-                        prefixIcon: const Icon(CupertinoIcons.mail,
+                        prefixIcon: const Icon(CupertinoIcons.lock_fill,
                             size: 25, color: Color.fromARGB(255, 97, 84, 72)),
+                        suffix: IconButton(
+                          icon: isObscured
+                              ? const Icon(
+                                  CupertinoIcons.eye_slash_fill,
+                                  size: 23,
+                                  color: Color.fromARGB(255, 97, 84, 72),
+                                )
+                              : const Icon(
+                                  CupertinoIcons.eye_fill,
+                                  size: 23,
+                                  color: Color.fromARGB(255, 97, 84, 72),
+                                ),
+                          splashRadius: 10,
+                          onPressed: () {
+                            setState(() {
+                              isObscured = !isObscured;
+                            });
+                          },
+                        ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 50, vertical: 20),
+                        contentPadding: const EdgeInsets.fromLTRB(50, 5, 1, 10),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
@@ -131,24 +144,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             borderSide: const BorderSide(
                                 color: Color(0xFFDF9A4F), width: 2),
                             gapPadding: 10),
-                        errorStyle: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500),
                       ),
                       onChanged: (value) {
                         setState(() {
                           if (_counterTesterError != 0) {
-                            if (value.isEmpty) {
-                              _emailErrorText = "This field cannot be empty!";
-                              _hasErrorEmail = true;
-                            } else if (!value.contains('@') ||
-                                !value.contains('.')) {
-                              _emailErrorText = "Email is not valid!";
-                              _hasErrorEmail = true;
+                            if (value.length < 8) {
+                              _passwordErrorText =
+                                  "Password should at least contain 8 characters!";
+                              _hasErrorPassword = true;
                             } else {
-                              _emailErrorText = '';
-                              _hasErrorEmail = false;
+                              _passwordErrorText = "";
+                              _hasErrorPassword = false;
                             }
                           }
                         });
@@ -156,16 +162,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       onTap: () {
                         setState(() {
                           if (_counterTesterError != 0) {
-                            if (_emailcntrl.text.isEmpty) {
-                              _emailErrorText = "This field cannot be empty!";
-                              _hasErrorEmail = true;
-                            } else if (!_emailcntrl.text.contains('@') ||
-                                !_emailcntrl.text.contains('.')) {
-                              _emailErrorText = "Email is not valid!";
-                              _hasErrorEmail = true;
+                            if (_passwordcntrl.text.length < 8) {
+                              _passwordErrorText =
+                                  "Password should at least contain 8 characters!";
+                              _hasErrorPassword = true;
                             } else {
-                              _emailErrorText = '';
-                              _hasErrorEmail = false;
+                              _passwordErrorText = "";
+                              _hasErrorPassword = false;
                             }
                           }
                         });
@@ -179,24 +182,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: ElevatedButton(
                     onPressed: (){
                       setState(() {
-                        if (_emailcntrl.text.isNotEmpty &&
-                            (_emailcntrl.text.contains('@') &&
-                                _emailcntrl.text.contains('.'))){
-                        //Navigator.push(context, CupertinoPageRoute(builder: (context) => const ForgetPasswordOTP(),));
-                        forgetPassword(_emailcntrl.text).whenComplete(() => Fluttertoast.showToast(msg: message,
+                        if (_passwordcntrl.text.isNotEmpty &&
+                            (_passwordcntrl.text.length > 7)){
+                        resetPassword(_passwordcntrl.text).whenComplete(() => Fluttertoast.showToast(msg: message,
                     toastLength: Toast.LENGTH_LONG,
                     backgroundColor:Colors.black.withOpacity(0.7),
                     ));
                         }
                         _counterTesterError += 1;
-                          if (_emailcntrl.text.isEmpty) {
-                            _emailErrorText = "This field cannot be empty!";
-                            _hasErrorEmail = true;
-                          } else if (!_emailcntrl.text.contains('@') ||
-                              !_emailcntrl.text.contains('.')) {
-                            _emailErrorText = "Email is not valid!";
-                            _hasErrorEmail = true;
-                          }
+                          if (_passwordcntrl.text.length < 8) {
+                              _passwordErrorText =
+                                  "Password should at least contain 8 characters!";
+                              _hasErrorPassword = true;
+                          } else {
+                              _passwordErrorText = "";
+                              _hasErrorPassword = false;
+                            }
                         });
                     },
                     style: ElevatedButton.styleFrom(
@@ -206,8 +207,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     backgroundColor: const Color(0xFFDF9A4F), // background color
                     ),
                    child:const Text(
-                          'Continue',
-                          style: TextStyle(color: Color(0xFF965D1A),fontSize: 18,fontWeight: FontWeight.bold,fontFamily: 'Poppins'),
+                          'Reset Password',
+                          style: TextStyle(color: Color(0xFF965D1A),fontSize: 17,fontWeight: FontWeight.bold,fontFamily: 'Poppins'),
                                         ),),
                 ),
                 const SizedBox(height:20)
